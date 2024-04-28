@@ -1,4 +1,4 @@
-#  Python UrBackup ![Icon](https://www.urbackup.org/favicon.ico)
+# Python UrBackup [![urbackup.org](docs/urbackup.png)](https://www.urbackup.org/)
 
 [![PyPI](https://img.shields.io/pypi/v/python-urbackup)](https://pypi.org/project/python-urbackup/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dirconfig)
@@ -6,7 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/judahpaul16/python-urbackup/badge.svg)](https://coveralls.io/github/judahpaul16/python-urbackup?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/python-urbackup/badge/?version=latest)](https://python-urbackup.readthedocs.io/en/latest/?badge=latest)
 
-Python wrapper to access and control an UrBackup server.
+Python UrBackup is a powerful Python wrapper designed to interact with UrBackup servers. This library allows you to manage backups, restore operations, and monitor the server status programmatically.
 
 *Originally [urbackup-server-web-api-wrapper](https://github.com/uroni/urbackup-server-python-web-api-wrapper)*
 
@@ -114,7 +114,7 @@ for client in clients:
               lastbackup=lastbackup, clientname=client["name"] ) )
 ```
 
-For more information, refer to the [documentation](https://python-urbackup.readthedocs.io/en/latest/).
+For more information, please refer to the [API Reference](https://python-urbackup.readthedocs.io/en/latest/api_reference/).
 
 ## Contributing 🤝
 
