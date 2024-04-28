@@ -1,6 +1,9 @@
-urbackup_server_web_api_wrapper.egg-info/*
-dist/urbackup-server-web-api-wrapper-*.zip
-urbackup_api/__pycache__/*
-
-# IDE
-.idea
+python_urbackup.egg-info/*
+dist/python-urbackup-*.zip
+urbackup/__pycache__/*
+test.py
+*.pyc
+__pycache__
+env
+build
+dist

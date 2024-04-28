@@ -1,7 +1,7 @@
-import urbackup_api
+import urbackup
 
 
-server = urbackup_api.urbackup_server("http://127.0.0.1:55414/x", "admin", "foo")
+server = urbackup.urbackup_server("http://127.0.0.1:55414/x", "admin", "foo")
 
 for action in server.get_actions():
     a = action["action"]

@@ -11,23 +11,22 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='urbackup-server-web-api-wrapper',
+    name='python-urbackup',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.11',
+    version='0.11.0',
 
     description='Python wrapper to access and control an UrBackup server',
     long_description=long_description,
-    long_description_content_type="text/markdown",
 
     # The project's main homepage.
-    url='https://github.com/uroni/urbackup-server-python-web-api-wrapper',
+    url='https://github.com/judahpaul16/python-urbackup',
 
     # Author details
-    author='Martin Raiber',
-    author_email='martin@urbackup.org',
+    author='Judah Paul',
+    author_email='me@judahpaul.com',
 
     # Choose your license
     license='Apache License 2.0',
@@ -48,8 +47,11 @@ setup(
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
     ],
 
     # What does your project relate to?
@@ -67,7 +69,10 @@ setup(
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=[],
+    install_requires=[
+        'requests',
+        'urllib3'
+    ],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
