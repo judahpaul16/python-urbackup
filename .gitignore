@@ -4,3 +4,4 @@ urbackup_api/__pycache__/*
 test.py
 *.pyc
 __pycache__
+env

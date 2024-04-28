@@ -4,7 +4,6 @@ import datetime
 import time
 import sys
 
-
 server = urbackup_api.urbackup_server("http://127.0.0.1:55414/x", "admin", "foo")
 
 for extra_client in server.get_extra_clients():  
@@ -16,7 +15,6 @@ computernames = """2.2.2.2
 for line in computernames:
     server.add_extra_client(line)
         
-
 clients = server.get_status()
 usage = server.get_usage()
 

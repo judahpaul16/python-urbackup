@@ -1,13 +1,26 @@
-# urbackup-server-web-api-wrapper
-Python wrapper to access and control an UrBackup server
+#  Python UrBackup ![Icon](https://www.urbackup.org/favicon.ico)
+
+[![PyPI](https://img.shields.io/pypi/v/python-urbackup)](https://pypi.org/project/python-urbackup/)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dirconfig)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/judahpaul16/python-urbackup/workflow.yaml)](https://github.com/judahpaul16/python-urbackup/actions)
+[![Coverage Status](https://coveralls.io/repos/github/judahpaul16/python-urbackup/badge.svg?branch=master)](https://coveralls.io/github/judahpaul16/python-urbackup?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/python-urbackup/badge/?version=latest)](https://python-urbackup.readthedocs.io/en/latest/?badge=latest)
+
+Python wrapper to access and control an UrBackup server.
+
+*Originally [urbackup-server-web-api-wrapper](https://github.com/uroni/urbackup-server-python-web-api-wrapper)*
 
 ## Installation
 
 Install with:
 
-	pip3 install urbackup-server-web-api-wrapper
+	pip3 install python-urbackup
 
 ## Usage
+
+
+
+## Examples
 
 Start a full file backup:
 
@@ -40,3 +53,6 @@ for client in clients:
               lastbackup=lastbackup, clientname=client["name"] ) )
 ```
 
+## License 📃
+
+This project is licensed under the Apache License - see the [LICENSE](LICENSE) file for details.
