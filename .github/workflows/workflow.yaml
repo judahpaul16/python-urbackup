@@ -37,18 +37,17 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
-          
-      - name: Run tests
+          pip install pytest coverage coveralls
+
+      - name: Run tests with coverage
         run: |
-          pip install pytest
-          pytest tests/
-      
+          coverage run --source=urbackup -m pytest tests/
+          coverage report -m
+
       - name: Coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
-          pip install coveralls
-          coverage run --source=mypkg -m pytest tests/
           coveralls
 
   build:
