@@ -11,23 +11,22 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='urbackup-server-web-api-wrapper',
+    name='python-urbackup',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.11',
+    version='0.7',
 
     description='Python wrapper to access and control an UrBackup server',
     long_description=long_description,
-    long_description_content_type="text/markdown",
 
     # The project's main homepage.
-    url='https://github.com/uroni/urbackup-server-python-web-api-wrapper',
+    url='https://github.com/judahpaul16/python-urbackup',
 
     # Author details
-    author='Martin Raiber',
-    author_email='martin@urbackup.org',
+    author='Judah Paul',
+    author_email='me@judahpaul.com',
 
     # Choose your license
     license='Apache License 2.0',
