@@ -11,6 +11,79 @@ class TestUrBackupServer(unittest.TestCase):
         self.password = "foo"
         self.server = urbackup_server(self.server_url, self.username, self.password)
 
+    @patch('urbackup.urbackup_server.get_server_identity')
+    def test_get_server_identity(self, mock_get_server_identity):
+        mock_get_server_identity.return_value = {'id': 'server1', 'name': 'TestServer'}
+        server_identity = self.server.get_server_identity()
+        self.assertEqual(server_identity, {'id': 'server1', 'name': 'TestServer'})
+
+    @patch('urbackup.urbackup_server.start_incr_file_backup')
+    def test_start_incr_file_backup(self, mock_start_backup):
+        mock_start_backup.return_value = True
+        result = self.server.start_incr_file_backup('client1')
+        self.assertTrue(result)
+        mock_start_backup.assert_called_with('client1')
+
+    @patch('urbackup.urbackup_server.start_full_file_backup')
+    def test_start_full_file_backup(self, mock_start_backup):
+        mock_start_backup.return_value = True
+        result = self.server.start_full_file_backup('client1')
+        self.assertTrue(result)
+        mock_start_backup.assert_called_with('client1')
+
+    @patch('urbackup.urbackup_server.start_incr_image_backup')
+    def test_start_incr_image_backup(self, mock_start_backup):
+        mock_start_backup.return_value = True
+        result = self.server.start_incr_image_backup('client1')
+        self.assertTrue(result)
+        mock_start_backup.assert_called_with('client1')
+
+    @patch('urbackup.urbackup_server.start_full_image_backup')
+    def test_start_full_image_backup(self, mock_start_backup):
+        mock_start_backup.return_value = True
+        result = self.server.start_full_image_backup('client1')
+        self.assertTrue(result)
+        mock_start_backup.assert_called_with('client1')
+
+    @patch('urbackup.urbackup_server.get_actions')
+    def test_get_actions(self, mock_get_actions):
+        mock_get_actions.return_value = [{'id': 1, 'type': 'backup', 'status': 'running'}]
+        actions = self.server.get_actions()
+        self.assertEqual(actions, [{'id': 1, 'type': 'backup', 'status': 'running'}])
+
+    @patch('urbackup.urbackup_server.stop_action')
+    def test_stop_action(self, mock_stop_action):
+        action = {'clientid': 'client1', 'id': 1}
+        mock_stop_action.return_value = True
+        result = self.server.stop_action(action)
+        self.assertTrue(result)
+        mock_stop_action.assert_called_with(action)
+
+    @patch('urbackup.urbackup_server.login')
+    @patch('urbackup.urbackup_server.get_client_status')
+    @patch('urbackup.urbackup_server.get_client_settings')
+    @patch('urbackup.urbackup_server._get_json')
+    def test_change_client_setting(self, mock_get_json, mock_get_client_settings, mock_get_client_status, mock_login):
+        # Mock the login method to return True
+        mock_login.return_value = True
+
+        # Set up the other mocks as before
+        mock_get_client_status.return_value = {'id': 'client1', 'name': 'TestClient'}
+        mock_get_client_settings.return_value = {'key1': 'value1', 'key2': 'value2'}
+        mock_get_json.return_value = {'saved_ok': True}
+
+        # Execute the method to test
+        result = self.server.change_client_setting('TestClient', 'key1', 'new_value')
+
+        # Verify that login was called
+        mock_login.assert_called_once()
+
+        # Check the results
+        self.assertTrue(result)
+
+        # Ensure _get_json was called with the correct parameters
+        mock_get_json.assert_called_with('settings', {'key1': 'new_value', 'key2': 'value2', 'overwrite': 'true', 'sa': 'clientsettings_save', 't_clientid': 'client1'})
+
     @patch('urbackup.urbackup_server.get_extra_clients')
     @patch('urbackup.urbackup_server.remove_extra_client')
     def test_manage_extra_clients(self, mock_remove, mock_get_clients):
