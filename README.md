@@ -92,7 +92,6 @@ else:
     print("Failed to add new client.")
 ```
 
-
 List clients with no file backup in the last three days:
 
 ```python
