@@ -1,7 +1,9 @@
-python-urbackup.egg-info/*
+python_urbackup.egg-info/*
 dist/python-urbackup-*.zip
-urbackup_api/__pycache__/*
+urbackup/__pycache__/*
 test.py
 *.pyc
 __pycache__
 env
+build
+dist

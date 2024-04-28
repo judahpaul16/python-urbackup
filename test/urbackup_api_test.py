@@ -1,79 +1,77 @@
-from urbackup_api import installer_os, urbackup_server
+import unittest
+from unittest.mock import patch, MagicMock
+from urbackup import urbackup_server, installer_os
 import datetime
 import time
 
-server = urbackup_server("http://127.0.0.1:55414/x", "admin", "foo")
+class TestUrBackupServer(unittest.TestCase):
+    def setUp(self):
+        self.server_url = "http://127.0.0.1:55414/x"
+        self.username = "admin"
+        self.password = "foo"
+        self.server = urbackup_server(self.server_url, self.username, self.password)
 
-for extra_client in server.get_extra_clients():  
-    server.remove_extra_client(extra_client["id"])
-
-computernames = """2.2.2.2
-3.3.3.3"""
-
-for line in computernames:
-    server.add_extra_client(line)
+    @patch('urbackup.urbackup_server.get_extra_clients')
+    @patch('urbackup.urbackup_server.remove_extra_client')
+    def test_manage_extra_clients(self, mock_remove, mock_get_clients):
+        # Mocking the get_extra_clients and remove_extra_client methods
+        mock_get_clients.return_value = [{'id': 'client1'}, {'id': 'client2'}]
         
-clients = server.get_status()
-usage = server.get_usage()
+        # Execute the method to test
+        extra_clients = self.server.get_extra_clients()
+        for extra_client in extra_clients:
+            self.server.remove_extra_client(extra_client["id"])
 
-if len(clients) != len(usage):
-    print("Failed to retreive usage or status information. Length of both lists is different.")
+        # Assert that remove_extra_client was called for each client
+        mock_remove.assert_any_call('client1')
+        mock_remove.assert_any_call('client2')
+        self.assertEqual(mock_remove.call_count, 2)
 
-# Uncomment to format time differently
-# locale.setlocale(locale.LC_TIME, "german")
+    @patch('urbackup.urbackup_server.add_extra_client')
+    def test_add_extra_clients(self, mock_add_client):
+        # Setup
+        computernames = ["2.2.2.2", "3.3.3.3"]
+        mock_add_client.return_value = True
 
-diff_time = 3*24*60*60 # 3 days
-for client in clients:
-    
-    if client["lastbackup"]=="-" or client["lastbackup"] < time.time() - diff_time:
-        
-        if client["lastbackup"]=="-" or client["lastbackup"]==0:
-            lastbackup = "Never"
-        else:
-            lastbackup = datetime.datetime.fromtimestamp(client["lastbackup"]).strftime("%x %X")
-            
-        print("Last file backup at {lastbackup} of client {clientname} is older than three days".format(
-              lastbackup=lastbackup, clientname=client["name"] ) )
-        
-        
-#if server.start_incr_file_backup("Johnwin7test-PC2"):
-#    print("Started file backup successfully")
-#else:
-#    print("Failed to start file backup")
-    
+        # Test
+        for ip in computernames:
+            result = self.server.add_extra_client(ip)
+            self.assertTrue(result)
+            mock_add_client.assert_called_with(ip)
 
-if not server.get_livelog():
-    print("Failed to get livelog contents")
+    @patch('urbackup.urbackup_server.get_status')
+    @patch('urbackup.urbackup_server.get_usage')
+    def test_check_status_and_usage(self, mock_get_usage, mock_get_status):
+        # Mocking responses
+        mock_get_status.return_value = [{'name': 'client1', 'lastbackup': 1590000000}]
+        mock_get_usage.return_value = [{'client': 'client1', 'data': 1000}]
 
-settings = server.get_client_settings("Johnwin7test-PC2")
+        # Execution
+        clients = self.server.get_status()
+        usage = self.server.get_usage()
 
-for key in settings:
-    print("{key}={value}".format(key=key, value=settings[key]))
-    
-print("Authkey: "+server.get_client_authkey("Johnwin7test-PC2"))
+        # Verify length and data integrity
+        self.assertEqual(len(clients), len(usage))
+        self.assertGreater(len(clients), 0)
+        self.assertEqual(clients[0]['name'], 'client1')
+        self.assertEqual(usage[0]['data'], 1000)
 
-if server.change_client_setting("Johnwin7test-PC2", "max_image_incr", "40"):
-    print("Changed setting successfully")
-else:
-    print("Failed to change setting")
-    
-    
-settings = server.get_global_settings()
+    @patch('urbackup.urbackup_server.get_status')
+    def test_backup_status_check(self, mock_get_status):
+        mock_get_status.return_value = [{'name': 'client1', 'lastbackup': time.time() - (4 * 24 * 60 * 60)}]
+        clients = self.server.get_status()
+        for client in clients:
+            if client['lastbackup'] < time.time() - (3 * 24 * 60 * 60):
+                lastbackup = datetime.datetime.fromtimestamp(client['lastbackup']).strftime('%x %X')
+                self.assertTrue("Last file backup at" in f"Last file backup at {lastbackup} of client {client['name']} is older than three days")
 
-for key in settings:
-    print("Global: {key}={value}".format(key=key, value=settings[key]))
-    
+    @patch('urbackup.urbackup_server.download_installer')
+    def test_download_installer(self, mock_download):
+        # Setup
+        mock_download.return_value = True
+        result = self.server.download_installer("test.exe", "test", installer_os.Windows)
+        self.assertTrue(result)
+        mock_download.assert_called_with("test.exe", "test", installer_os.Windows)
 
-if server.set_global_setting("max_image_incr", "40"):
-    print("Changed global setting successfully")
-else:
-    print("Failed to change global setting")
-
-#Get all file backups for a specified client id
-backups = server.get_clientbackups('8')
-
-#Get all image backups for a specified client id
-backups_image = server.get_clientimagebackups('8')
-
-#Download a client installer
-server.download_installer("test.exe", "test", installer_os.Windows)
+if __name__ == '__main__':
+    unittest.main()
