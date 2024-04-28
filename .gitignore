@@ -1,5 +1,5 @@
-urbackup_server_web_api_wrapper.egg-info/*
-dist/urbackup-server-web-api-wrapper-*.zip
+python-urbackup.egg-info/*
+dist/python-urbackup-*.zip
 urbackup_api/__pycache__/*
 test.py
 *.pyc
