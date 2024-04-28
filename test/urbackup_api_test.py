@@ -1,10 +1,8 @@
-import urbackup_api
-from urbackup_api import installer_os
+from urbackup_api import installer_os, urbackup_server
 import datetime
 import time
-import sys
 
-server = urbackup_api.urbackup_server("http://127.0.0.1:55414/x", "admin", "foo")
+server = urbackup_server("http://127.0.0.1:55414/x", "admin", "foo")
 
 for extra_client in server.get_extra_clients():  
     server.remove_extra_client(extra_client["id"])

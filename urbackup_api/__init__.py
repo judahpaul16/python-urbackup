@@ -1,10 +1,7 @@
-import json
+from enum import Enum
 import requests
 from base64 import b64encode
 import hashlib
-import socket
-import shutil
-import os
 import binascii
 import logging
 
@@ -17,6 +14,10 @@ try:
 except ImportError:
     import urllib.parse
 
+
+class installer_os(Enum):
+    Windows = "windows",
+    Linux = "linux"
 
 class urbackup_server:
 
