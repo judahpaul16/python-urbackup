@@ -53,13 +53,13 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'release' || github.event_name == 'pull_request')
+    if: github.ref == 'refs/heads/master' && (github.event_name == 'release' || github.event_name == 'pull_request')
 
     steps:
       - uses: actions/checkout@v4
       
       - name: Bump patch version
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         run: |
           pip install bump2version
           bump2version patch
@@ -83,7 +83,7 @@ jobs:
   publish-testpypi:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'release' || github.event_name == 'pull_request')
+    if: github.ref == 'refs/heads/master' && (github.event_name == 'release' || github.event_name == 'pull_request')
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
@@ -104,7 +104,7 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'release' || github.event_name == 'pull_request')
+    if: github.ref == 'refs/heads/master' && (github.event_name == 'release' || github.event_name == 'pull_request')
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v4
