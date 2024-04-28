@@ -102,7 +102,7 @@ class urbackup_server:
 
     def _download_file(self, action, outputfn, params):
 
-        req = self._get_response(action, params, 'GET');
+        req = self._get_response(action, params, 'GET')
 
         if req.status_code != 200:
             return False
@@ -122,7 +122,7 @@ class urbackup_server:
 
             logger.debug('Trying anonymous login...')
 
-            login = self._get_json('login', {});
+            login = self._get_json('login', {})
 
             if not login or 'success' not in login or not login['success'] :
                 logger.debug('Logging in...')
@@ -132,7 +132,7 @@ class urbackup_server:
                     logger.warning('Username does not exist')
                     return False
 
-                self._session = salt['ses'];
+                self._session = salt['ses']
 
                 if 'salt' in salt:
                     password_md5_bin = hashlib.md5((salt['salt']+self._server_password).encode()).digest()
@@ -161,7 +161,7 @@ class urbackup_server:
                     return False
             else:
                 self._logged_in = True
-                self._session = login['session'];
+                self._session = login['session']
                 return True
         else:
             return True
@@ -183,7 +183,7 @@ class urbackup_server:
 
             if client['name'] == clientname:
 
-                return client;
+                return client
 
         logger.warning('Could not find client status. No permission?')
         return None
@@ -267,7 +267,7 @@ class urbackup_server:
         if client == None:
             return None
 
-        clientid = client['id'];
+        clientid = client['id']
 
         settings = self._get_json('settings', {'sa': 'clientsettings',
                                     't_clientid': clientid})
@@ -282,26 +282,31 @@ class urbackup_server:
             return False
 
         client = self.get_client_status(clientname)
-
-        if client == None:
+        if client is None:
             return False
 
-        clientid = client['id'];
-
-        settings = self._get_json('settings', {'sa': 'clientsettings',
-                                    't_clientid': clientid})
-
-        if not settings or not 'settings' in settings:
+        clientid = client['id']
+        
+        current_settings = self.get_client_settings(clientname)
+        if current_settings is None:
             return False
 
-        settings['settings'][key] = new_value
-        settings['settings']['overwrite'] = 'true'
-        settings['settings']['sa'] = 'clientsettings_save'
-        settings['settings']['t_clientid'] = clientid
+        if key in current_settings:
+            current_settings[key] = new_value
+        else:
+            logger.warning('Key not found in settings')
+            return False
 
-        ret = self._get_json('settings', settings['settings'])
+        save_payload = {
+            'overwrite': 'true',
+            'sa': 'clientsettings_save',
+            't_clientid': clientid
+        }
+        
+        save_payload.update(current_settings)
+        ret = self._get_json('settings', save_payload)
 
-        return ret != None and 'saved_ok' in ret
+        return ret is not None and 'saved_ok' in ret
 
     def get_client_authkey(self, clientname):
 
@@ -396,7 +401,7 @@ class urbackup_server:
             return False
 
         ret = self._get_json('start_backup', {'start_client': client_info['id'],
-                                         'start_type': backup_type } );
+                                         'start_type': backup_type } )
 
         if ( ret == None
             or 'result' not in ret
@@ -408,16 +413,16 @@ class urbackup_server:
         return True
 
     def start_incr_file_backup(self, clientname):
-        return self._start_backup(clientname, 'incr_file');
+        return self._start_backup(clientname, 'incr_file')
 
     def start_full_file_backup(self, clientname):
-        return self._start_backup(clientname, 'full_file');
+        return self._start_backup(clientname, 'full_file')
 
     def start_incr_image_backup(self, clientname):
-        return self._start_backup(clientname, 'incr_image');
+        return self._start_backup(clientname, 'incr_image')
 
     def start_full_image_backup(self, clientname):
-        return self._start_backup(clientname, 'full_image');
+        return self._start_backup(clientname, 'full_image')
 
     def add_extra_client(self, addr):
         if not self.login():
