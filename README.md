@@ -13,10 +13,9 @@ Python UrBackup is a powerful Python wrapper designed to interact with UrBackup 
 ## Installation
 
 Install with:
-
-	pip3 install python-urbackup
-
-To update the "Usage" section of your GitHub README, we can provide a more detailed and structured snippet that reflects the initialization, login, and some common operations with the `urbackup_server` class. Here is the revised "Usage" section that can be added:
+```bash
+pip install python-urbackup
+```
 
 ## Usage
 
@@ -27,7 +26,7 @@ Create an instance of the `urbackup_server` by specifying the server URL, userna
 ```python
 from urbackup import urbackup_server
 
-backup_server = urbackup_server('your_server_url', 'your_username', 'your_password')
+server = urbackup_server('your_server_url', 'your_username', 'your_password')
 ```
 
 ### Logging In
@@ -35,7 +34,7 @@ backup_server = urbackup_server('your_server_url', 'your_username', 'your_passwo
 To perform any operations, you need to log in:
 
 ```python
-if backup_server.login():
+if server.login():
     print("Login successful!")
 else:
     print("Login failed!")
@@ -46,7 +45,7 @@ else:
 Retrieve the status of a specific client:
 
 ```python
-client_status = backup_server.get_client_status('client_name')
+client_status = server.get_client_status('client_name')
 if client_status:
     print(f"Client status: {client_status}")
 else:
@@ -58,7 +57,7 @@ else:
 To download an installer for a new client, specify the file path and the client's name:
 
 ```python
-if backup_server.download_installer('path/to/installer', 'new_client_name'):
+if server.download_installer('path/to/installer', 'new_client_name'):
     print("Installer downloaded successfully.")
 else:
     print("Failed to download installer.")
@@ -69,12 +68,12 @@ else:
 You can start different types of backups for a client. Here are examples of starting an incremental file backup and a full file backup:
 
 ```python
-if backup_server.start_incr_file_backup('client_name'):
+if server.start_incr_file_backup('client_name'):
     print("Incremental file backup started successfully.")
 else:
     print("Failed to start incremental file backup.")
 
-if backup_server.start_full_file_backup('client_name'):
+if server.start_full_file_backup('client_name'):
     print("Full file backup started successfully.")
 else:
     print("Failed to start full file backup.")
@@ -85,7 +84,7 @@ else:
 Add a new client to the server:
 
 ```python
-new_client = backup_server.add_client('new_client_name')
+new_client = server.add_client('new_client_name')
 if new_client:
     print("New client added:", new_client)
 else:
@@ -114,6 +113,51 @@ for client in clients:
 ```
 
 For more information, please refer to the [API Reference](https://python-urbackup.readthedocs.io/en/latest/api_reference/).
+
+## UrBackup CLI <img src="data:image/svg+xml,<svg fill='%234D4D4D' role='img' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><title>Windows Terminal</title><path d='M8.165 6V3h7.665v3H8.165zm-.5-3H1c-.55 0-1 .45-1 1v2h7.665V3zM23 3h-6.67v3H24V4c0-.55-.45-1-1-1zM0 6.5h24V20c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V6.5zM11.5 18c0 .3.2.5.5.5h8c.3 0 .5-.2.5-.5v-1.5c0-.3-.2-.5-.5-.5h-8c-.3 0-.5.2-.5.5V18zm-5.2-4.55l-3.1 3.1c-.25.25-.25.6 0 .8l.9.9c.25.25.6.25.8 0l4.4-4.4a.52.52 0 0 0 0-.8l-4.4-4.4c-.2-.2-.6-.2-.8 0l-.9.9c-.25.2-.25.55 0 .8l3.1 3.1z'/></svg>" width=20>
+
+The UrBackup CLI is a command-line interface that allows you to interact with the UrBackup server from a client machine.
+
+*Important Note: For Windows the command-line tool is `urbackupclient_cmd`. Mac and Linux use `urbackupclientctl`.*
+
+CLI options for `urbackupclientctl` and `urbackupclientctl` are as follows:
+
+```sh
+USAGE:
+
+        urbackupclientctl [--help] [--version] <command> [<args>]
+
+Get specific command help with urbackupclientctl <command> --help
+
+        urbackupclientctl start
+                Start an incremental/full image/file backup
+
+        urbackupclientctl status
+                Get current backup status
+
+        urbackupclientctl browse
+                Browse backups and files/folders in backups
+
+        urbackupclientctl restore-start
+                Restore files/folders from backup
+
+        urbackupclientctl set-settings
+                Set backup settings
+
+        urbackupclientctl reset-keep
+                Reset keeping files during incremental backups
+
+        urbackupclientctl add-backupdir
+                Add new directory to backup set
+
+        urbackupclientctl list-backupdirs
+                List directories that are being backed up
+
+        urbackupclientctl remove-backupdir
+                Remove directory from backup set
+```
+
+For more information, please refer to the [UrBackup Administration Documentation](https://www.urbackup.org/administration_manual.html).
 
 ## Contributing 🤝
 

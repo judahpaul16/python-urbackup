@@ -1,4 +1,4 @@
-# API Reference
+# API Reference 
 
 This section provides detailed documentation for all functions and classes available in the Python UrBackup API.
 
@@ -66,3 +66,5 @@ This class provides methods to interact with the UrBackup server.
 - `_md5(s)`: Calculates the MD5 hash of a given string.
 
 Please refer to the source code for more detailed information on each method, including parameters and expected response types.
+
+For more specific information regarding urbackup administration, please refer to the [official UrBackup documentation](https://www.urbackup.org/administration_manual.html).
