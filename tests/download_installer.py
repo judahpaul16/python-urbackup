@@ -13,10 +13,7 @@ URBACKUP_PASSWORD="foo"
 config = dotenv_values()
 server = urbackup.Server(config["URBACKUP_URL"], config["URBACKUP_USER"], config["URBACKUP_PASSWORD"], htpasswd=True)
 
-for action in server.get_actions():
-    a = action["action"]
-    if a ==server.action_full_file or a==server.action_resumed_full_file:
-        print("Running full file backup: "+action["name"])
-        
-        print("Stopping...")
-        server.stop_action(action)
+if server.download_installer('C:\\Users\\K\\Downloads', 'new_client_name'):
+    print("Installer downloaded successfully.")
+else:
+    print("Failed to download installer.")

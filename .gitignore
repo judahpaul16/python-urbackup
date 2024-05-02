@@ -1,7 +1,6 @@
 python_urbackup.egg-info/
 dist/python-urbackup-*.zip
 urbackup/__pycache__/*
-tests/remote*
 test.py
 *.pyc
 __pycache__
@@ -9,3 +8,4 @@ env
 build
 dist
 site
+.env
