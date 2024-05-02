@@ -435,7 +435,7 @@ class Server:
 
         return backups["backup_images"]
 
-    def get_clientbackups(self, clientid=0):
+    def get_client_backups(self, clientid=0):
         if not self.login():
             return None
 

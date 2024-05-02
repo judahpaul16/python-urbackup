@@ -53,6 +53,11 @@ This class provides methods to interact with the UrBackup server.
 - `start_full_file_backup(clientname)`: Starts a full file backup for a specified client.
 - `start_incr_image_backup(clientname)`: Starts an incremental image backup for a specified client.
 - `start_full_image_backup(clientname)`: Starts a full image backup for a specified client.
+- `get_client_backups(clientid)`: Retrieves a list of backups for a specified client.
+- `get_backup_content(clientid, backupid, path="/")`: Retrieves the content of a backup for a specified client.
+- `download_backup_file(clientid, backupid, path)`: Downloads a file from a backup for a specified client.
+- `get_groups()`: Retrieves a list of groups from the server.
+- `get_clients_with_group(groupid)`: Retrieves a list of clients in a specified group.
 - `add_extra_client(addr)`: Adds an extra client by hostname.
 - `remove_extra_client(ecid)`: Removes an extra client by ID.
 - `get_actions()`: Retrieves current actions being performed on the server.

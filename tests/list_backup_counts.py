@@ -17,7 +17,7 @@ clients = server.get_clients_with_group()
 
 for client in clients:
     
-    file_backups = server.get_clientbackups(client["id"])
+    file_backups = server.get_client_backups(client["id"])
     
     incr_file = 0
     full_file = 0
