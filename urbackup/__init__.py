@@ -424,6 +424,66 @@ class Server:
     def start_full_image_backup(self, clientname):
         return self._start_backup(clientname, 'full_image')
 
+    def get_clientimagebackups(self, clientid=0):
+        if not self.login():
+            return None
+
+        backups = self._get_json("backups", {"sa": "backups", "clientid": clientid})
+
+        return backups["backup_images"]
+
+    def get_clientbackups(self, clientid=0):
+        if not self.login():
+            return None
+
+        backups = self._get_json("backups", {"sa": "backups", "clientid": clientid})
+
+        return backups["backups"]
+
+    def get_backup_content(self, clientid, backupid, path="/"):
+        if not self.login():
+            return None
+
+        content = self._get_json("backups", {
+            "sa": "files",
+            "clientid": clientid,
+            "backupid": backupid,
+            "path": path
+        })
+
+        return content["files"]
+
+    def download_backup_file(self, clientid, backupid, path="/"):
+        if not self.login():
+            return None
+
+        response = self._get_response("backups", {
+            "sa": "filesdl",
+            "clientid": clientid,
+            "backupid": backupid,
+            "path": path
+        }, "GET")
+
+        if response.status != 200:
+            return None
+        return response.read()
+
+    def get_groups(self):
+        if not self.login():
+            return None
+
+        settings = self._get_json("settings")
+
+        return settings["navitems"]["groups"]
+
+    def get_clients_with_group(self):
+        if not self.login():
+            return None
+
+        settings = self._get_json("settings")
+
+        return settings["navitems"]["clients"]
+
     def add_extra_client(self, addr):
         if not self.login():
             return None
