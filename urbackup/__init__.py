@@ -42,10 +42,13 @@ class Server:
     _logged_in = False
     _lastlogid = 0
 
-    def __init__(self, url, username, password):
+    def __init__(self, url, username, password, htpasswd=False):
         self._server_url = url
         self._server_username = username
         self._server_password = password
+        if htpasswd:
+            self.server_basic_username = username
+            self.server_basic_password = password
 
     def _get_response(self, action, params, method='POST'):
 
@@ -129,7 +132,7 @@ class Server:
 
                 salt = self._get_json('salt', {'username': self._server_username})
                 if not salt or not ('ses' in salt):
-                    logger.warning('Username does not exist')
+                    logger.warning(f'Username `{self._server_username}` not found')
                     return False
 
                 self._session = salt['ses']
