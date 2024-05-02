@@ -28,10 +28,10 @@ For more detailed installation instructions, see the [Getting Started](getting_s
 Here's a quick example to get you started:
 
 ```python
-from urbackup import urbackup_server
+from urbackup import Server
 
 # Initialize and log in
-server = urbackup_server('your_server_url', 'your_username', 'your_password')
+server = Server('your_server_url', 'your_username', 'your_password')
 if server.login():
     print("Login successful!")
 ```

@@ -1,4 +1,4 @@
-# Python UrBackup [![urbackup.org](docs/urbackup.png)](https://www.urbackup.org/)
+# Python UrBackup [![urbackup.org](https://github.com/judahpaul16/python-urbackup/raw/master/docs/urbackup.png)](https://www.urbackup.org/)
 
 [![PyPI](https://img.shields.io/pypi/v/python-urbackup)](https://pypi.org/project/python-urbackup/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dirconfig)
@@ -6,7 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/judahpaul16/python-urbackup/badge.svg?branch=master&kill_cache=1)](https://coveralls.io/github/judahpaul16/python-urbackup?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/python-urbackup/badge/?version=latest)](https://python-urbackup.readthedocs.io/en/latest/?badge=latest)
 
-Python UrBackup is a powerful Python wrapper designed to interact with UrBackup servers. This library allows you to manage backups, restore operations, and monitor the server status programmatically.
+Python UrBackup is a powerful Python wrapper designed to interact with UrBackup servers. This module allows you to manage backups, restore operations, and monitor the server status programmatically.
 
 *Originally [urbackup-server-web-api-wrapper](https://github.com/uroni/urbackup-server-python-web-api-wrapper)*
 
@@ -21,12 +21,12 @@ pip install python-urbackup
 
 ### Initialization
 
-Create an instance of the `urbackup_server` by specifying the server URL, username, and password. Replace `'your_server_url'`, `'your_username'`, and `'your_password'` with your server details:
+Create an instance of the `Server` by specifying the server URL, username, and password. Replace `'your_server_url'`, `'your_username'`, and `'your_password'` with your server details:
 
 ```python
-from urbackup import urbackup_server
+from urbackup import Server
 
-server = urbackup_server('your_server_url', 'your_username', 'your_password')
+server = Server('your_server_url', 'your_username', 'your_password')
 ```
 
 ### Logging In
@@ -97,7 +97,7 @@ List clients with no file backup in the last three days:
 import urbackup
 import time
 import datetime
-server = urbackup.urbackup_server("http://127.0.0.1:55414/x", "admin", "foo")
+server = urbackup.Server("http://127.0.0.1:55414/x", "admin", "foo")
 clients = server.get_status()
 diff_time = 3*24*60*60 # 3 days
 for client in clients:

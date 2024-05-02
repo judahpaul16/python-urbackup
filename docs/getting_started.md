@@ -13,9 +13,9 @@ pip install python-urbackup
 After installation, you'll need to configure the library with your UrBackup server details:
 
 ```python
-from urbackup import urbackup_server
+from urbackup import Server
 
-server = urbackup_server('your_server_url', 'your_username', 'your_password')
+server = Server('your_server_url', 'your_username', 'your_password')
 ```
 
 This is the basic configuration needed to start interacting with your UrBackup server.

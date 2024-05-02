@@ -11,7 +11,7 @@ An enumeration of supported operating systems for installers.
 - `Windows`: Represents a Windows operating system.
 - `Linux`: Represents a Linux operating system.
 
-### `urbackup_server`
+### `Server`
 
 This class provides methods to interact with the UrBackup server.
 
@@ -34,7 +34,7 @@ This class provides methods to interact with the UrBackup server.
 
 #### Methods
 
-- `__init__(url, username, password)`: Initializes a new `urbackup_server` instance.
+- `__init__(url, username, password)`: Initializes a new `Server` instance.
 - `login()`: Logs in to the UrBackup server and returns `True` on success.
 - `get_client_status(client_name)`: Retrieves the status of a specified client.
 - `download_installer(installer_fn, new_clientname, os='linux')`: Downloads the installer for a specified client and operating system.

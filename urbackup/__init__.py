@@ -19,7 +19,7 @@ class installer_os(Enum):
     Windows = "windows",
     Linux = "linux"
 
-class urbackup_server:
+class Server:
 
     #If you have basic authentication via .htpasswd
     server_basic_username = ''

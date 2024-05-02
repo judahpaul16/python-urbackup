@@ -1,11 +1,11 @@
 # Initialization
 
-To start using the Python UrBackup API, you need to initialize the `urbackup_server` object:
+To start using the Python UrBackup API, you need to initialize the `Server` object:
 
 ```python
-from urbackup import urbackup_server
+from urbackup import Server
 
-server = urbackup_server('your_server_url', 'your_username', 'your_password')
+server = Server('your_server_url', 'your_username', 'your_password')
 ```
 
 ## Logging In
