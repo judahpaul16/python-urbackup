@@ -57,16 +57,23 @@ class Server:
             'Content-Type': 'application/json; charset=UTF-8'
         }
 
-        if('server_basic_username' in globals() and len(self.server_basic_username)>0):
+        if('server_basic_username' in globals() or len(self.server_basic_username)>0):
+            print(b64encode(
+                f"{self.server_basic_username}:{self.server_basic_password}".encode('ascii')
+            ).decode('ascii'))
             userAndPass = b64encode(
-                str.encode('%s:%s' % (self.server_basic_username, self.server_basic_password))
+                f"{self.server_basic_username}:{self.server_basic_password}".encode('ascii')
             ).decode('ascii')
-            headers['Authorization'] = 'Basic %s' %  userAndPass
+            headers['Authorization'] = f"Basic {userAndPass}"
+
+        print(params)
 
         try:
-            action_url = '%s?%s' % (self._server_url, urllib.urlencode({'a': action}))
+            print(f"{self._server_url}?{urllib.urlencode({'a': action})}")
+            action_url = f"{self._server_url}?{urllib.urlencode({'a': action})}"
         except AttributeError:
-            action_url = '%s?%s' % (self._server_url, urllib.parse.urlencode({'a': action}))
+            print(f"{self._server_url}?{urllib.parse.urlencode({'a': action})}")
+            action_url = f"{self._server_url}?{urllib.parse.urlencode({'a': action})}"
 
         if(len(self._session)>0):
             params['ses'] = self._session
@@ -82,7 +89,7 @@ class Server:
                 params=params
             )
         else:
-            raise Exception('Request with method \'%s\' has not been implemented yet.' % method)
+            raise Exception(f"Request with method '{method}' has not been implemented yet.")
 
         return r
 
