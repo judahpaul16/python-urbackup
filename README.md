@@ -1,118 +1,174 @@
 # Python UrBackup [![urbackup.org](docs/urbackup.png)](https://www.urbackup.org/)
 
 [![PyPI](https://img.shields.io/pypi/v/python-urbackup)](https://pypi.org/project/python-urbackup/)
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/dirconfig)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/python-urbackup)
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/judahpaul16/python-urbackup/workflow.yaml)](https://github.com/judahpaul16/python-urbackup/actions)
 [![Coverage Status](https://coveralls.io/repos/github/judahpaul16/python-urbackup/badge.svg?branch=master&kill_cache=1)](https://coveralls.io/github/judahpaul16/python-urbackup?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/python-urbackup/badge/?version=latest)](https://python-urbackup.readthedocs.io/en/latest/?badge=latest)
 
-Python UrBackup is a powerful Python wrapper designed to interact with UrBackup servers. This library allows you to manage backups, restore operations, and monitor the server status programmatically.
+Python wrapper to interact with UrBackup servers. Manage backups, restore operations, and monitor server status programmatically.
 
 *Originally [urbackup-server-web-api-wrapper](https://github.com/uroni/urbackup-server-python-web-api-wrapper)*
 
 ## Installation
 
-Install with:
 ```bash
 pip install python-urbackup
 ```
 
-## Usage
-
-### Initialization
-
-Create an instance of the `urbackup_server` by specifying the server URL, username, and password. Replace `'your_server_url'`, `'your_username'`, and `'your_password'` with your server details:
+## Quick Start
 
 ```python
 from urbackup import urbackup_server
 
-server = urbackup_server('your_server_url', 'your_username', 'your_password')
-```
+server = urbackup_server("http://127.0.0.1:55414/x", "admin", "password")
 
-### Logging In
-
-To perform any operations, you need to log in:
-
-```python
 if server.login():
-    print("Login successful!")
-else:
-    print("Login failed!")
+    print("Connected!")
 ```
 
-### Getting Client Status
+## Legacy API (dict-based)
 
-Retrieve the status of a specific client:
-
-```python
-client_status = server.get_client_status('client_name')
-if client_status:
-    print(f"Client status: {client_status}")
-else:
-    print("Client not found or access denied.")
-```
-
-### Downloading an Installer
-
-To download an installer for a new client, specify the file path and the client's name:
+The legacy API returns raw dicts/lists, preserving backward compatibility.
 
 ```python
-if server.download_installer('path/to/installer', 'new_client_name'):
-    print("Installer downloaded successfully.")
-else:
-    print("Failed to download installer.")
-```
+from urbackup import urbackup_server
 
-### Starting Backups
+server = urbackup_server("http://127.0.0.1:55414/x", "admin", "password")
 
-You can start different types of backups for a client. Here are examples of starting an incremental file backup and a full file backup:
-
-```python
-if server.start_incr_file_backup('client_name'):
-    print("Incremental file backup started successfully.")
-else:
-    print("Failed to start incremental file backup.")
-
-if server.start_full_file_backup('client_name'):
-    print("Full file backup started successfully.")
-else:
-    print("Failed to start full file backup.")
-```
-
-### Managing Clients
-
-Add a new client to the server:
-
-```python
-new_client = server.add_client('new_client_name')
-if new_client:
-    print("New client added:", new_client)
-else:
-    print("Failed to add new client.")
-```
-
-List clients with no file backup in the last three days:
-
-```python
-import urbackup
-import time
-import datetime
-server = urbackup.urbackup_server("http://127.0.0.1:55414/x", "admin", "foo")
+# Client status
 clients = server.get_status()
-diff_time = 3*24*60*60 # 3 days
 for client in clients:
-    if client["lastbackup"]=="-" or client["lastbackup"] < time.time() - diff_time:
+    print(f"{client['name']}: online={client['online']}")
 
-        if client["lastbackup"]=="-" or client["lastbackup"]==0:
-            lastbackup = "Never"
-        else:
-            lastbackup = datetime.datetime.fromtimestamp(client["lastbackup"]).strftime("%x %X")
+# Start backups
+server.start_incr_file_backup("my-client")
+server.start_full_image_backup("my-client")
 
-        print("Last file backup at {lastbackup} of client {clientname} is older than three days".format(
-              lastbackup=lastbackup, clientname=client["name"] ) )
+# Settings
+settings = server.get_global_settings()
+server.set_global_setting("backup_window", "1-5/8-17")
+
+# Client settings
+server.change_client_setting("my-client", "internet_speed", "50000")
+
+# Extra clients
+server.add_extra_client("10.0.0.5")
+extras = server.get_extra_clients()
+
+# Monitor actions
+actions = server.get_actions()
+for action in actions or []:
+    server.stop_action(action)
+
+# Live log
+log = server.get_livelog()
 ```
 
-For more information, please refer to the [API Reference](https://python-urbackup.readthedocs.io/en/latest/api_reference/).
+## Typed API (dataclass-based)
+
+The typed API returns structured dataclass objects with full type hints.
+
+```python
+from urbackup import urbackup_server, BackupType, ClientNotFoundError
+
+server = urbackup_server("http://127.0.0.1:55414/x", "admin", "password")
+server.login()
+
+# Typed client statuses
+clients = server.get_client_statuses()
+for client in clients:
+    print(f"{client.name}: id={client.id}, online={client.online}")
+
+# Find specific client (raises ClientNotFoundError if missing)
+try:
+    client = server.get_client_status_by_name("my-client")
+    print(f"Last backup: {client.lastbackup}")
+except ClientNotFoundError:
+    print("Client not found")
+
+# Start backup with enum
+server.start_backup_typed("my-client", BackupType.INCR_FILE)
+
+# Typed usage stats
+for entry in server.get_usage_typed():
+    print(f"{entry.name}: {entry.used} bytes, {entry.files} files")
+
+# Typed actions with progress
+for action in server.get_actions_typed():
+    print(f"Client {action.clientid}: {action.progress_percent}%")
+
+# Typed settings (raises AccessDeniedError on failure)
+settings = server.get_global_settings_typed()
+server.set_global_setting_typed("backup_window", "1-7/0-24")
+
+# Client settings (raises KeyError for invalid keys)
+server.change_client_setting_typed("my-client", "internet_speed", "50000")
+
+# Typed log entries
+for entry in server.get_livelog_typed():
+    print(f"[{entry.level}] {entry.message}")
+
+# Backup history
+backups = server.get_backups(clientid=1)
+images = server.get_image_backups(clientid=1)
+
+# Extra clients
+for ec in server.get_extra_clients_typed():
+    print(f"{ec.hostname} (id={ec.id})")
+
+# Server identity
+identity = server.get_server_identity_str()
+```
+
+## Settings Example
+
+Configure a client's backup folder path and incremental backup interval:
+
+```python
+server.change_client_setting("my-client", "default_dirs", "/home;/etc")
+server.change_client_setting("my-client", "update_freq_incr", "4")  # hours
+```
+
+## Basic Auth (htpasswd)
+
+If your server uses HTTP basic authentication:
+
+```python
+server = urbackup_server(
+    "http://127.0.0.1:55414/x", "admin", "password",
+    basic_username="httpuser", basic_password="httppass",
+)
+```
+
+## Exception Hierarchy
+
+```
+UrbackupError
+├── AuthenticationError    # login failed
+├── ClientNotFoundError    # client name not found
+├── AccessDeniedError      # insufficient permissions
+└── UserAlreadyExistsError # duplicate user creation
+```
+
+## Available Types
+
+| Type | Description |
+|------|-------------|
+| `ClientStatus` | Client info: id, name, online, lastbackup, ip, etc. |
+| `BackupEntry` | Backup record: id, clientid, backuptime, size_bytes |
+| `UsageEntry` | Storage usage: name, used, files, images |
+| `ActionProgress` | Running action: clientid, id, action, progress_percent |
+| `LogEntry` | Log record: id, message, level, time |
+| `ExtraClient` | Extra client: id, hostname |
+| `User` | User account: id, name, rights |
+| `Group` | Client group: id, name |
+| `BackupType` | Enum: INCR_FILE, FULL_FILE, INCR_IMAGE, FULL_IMAGE |
+| `ActionType` | IntEnum: all server action type constants |
+| `InstallerOS` | Enum: WINDOWS, LINUX |
+| `LogLevel` | IntEnum: ERROR, WARNING, INFO, DEBUG |
+
+All dataclasses include a `raw` field with the original API dict.
 
 ## UrBackup CLI <img src="data:image/svg+xml,<svg fill='%234D4D4D' role='img' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><title>Windows Terminal</title><path d='M8.165 6V3h7.665v3H8.165zm-.5-3H1c-.55 0-1 .45-1 1v2h7.665V3zM23 3h-6.67v3H24V4c0-.55-.45-1-1-1zM0 6.5h24V20c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V6.5zM11.5 18c0 .3.2.5.5.5h8c.3 0 .5-.2.5-.5v-1.5c0-.3-.2-.5-.5-.5h-8c-.3 0-.5.2-.5.5V18zm-5.2-4.55l-3.1 3.1c-.25.25-.25.6 0 .8l.9.9c.25.25.6.25.8 0l4.4-4.4a.52.52 0 0 0 0-.8l-4.4-4.4c-.2-.2-.6-.2-.8 0l-.9.9c-.25.2-.25.55 0 .8l3.1 3.1z'/></svg>" width=20>
 
@@ -120,7 +176,7 @@ The UrBackup CLI is a command-line interface that allows you to interact with th
 
 *Important Note: For Windows the command-line tool is `urbackupclient_cmd`. Mac and Linux use `urbackupclientctl`.*
 
-CLI options for `urbackupclientctl` and `urbackupclientctl` are as follows:
+CLI options for `urbackupclientctl` and `urbackupclient_cmd` are as follows:
 
 ```sh
 USAGE:
@@ -159,10 +215,10 @@ Get specific command help with urbackupclientctl <command> --help
 
 For more information, please refer to the [UrBackup Administration Documentation](https://www.urbackup.org/administration_manual.html).
 
-## Contributing 🤝
+## Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
 
-## License 📃
+## License
 
 This project is licensed under the Apache License - see the [LICENSE](LICENSE) file for details.

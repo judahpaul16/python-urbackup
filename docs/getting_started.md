@@ -1,8 +1,10 @@
-# Getting Started with Python UrBackup
+# Getting Started
+
+## Requirements
+
+Python 3.10 or later.
 
 ## Installation
-
-To install Python UrBackup, you'll need Python installed on your system. Python UrBackup supports Python 3.x.
 
 ```bash
 pip install python-urbackup
@@ -10,12 +12,28 @@ pip install python-urbackup
 
 ## Configuration
 
-After installation, you'll need to configure the library with your UrBackup server details:
-
 ```python
 from urbackup import urbackup_server
 
-server = urbackup_server('your_server_url', 'your_username', 'your_password')
+server = urbackup_server("http://127.0.0.1:55414/x", "admin", "password")
 ```
 
-This is the basic configuration needed to start interacting with your UrBackup server.
+If your server uses HTTP basic authentication (.htpasswd):
+
+```python
+server = urbackup_server(
+    "http://127.0.0.1:55414/x", "admin", "password",
+    basic_username="httpuser", basic_password="httppass",
+)
+```
+
+## Logging In
+
+```python
+if server.login():
+    print("Login successful!")
+else:
+    print("Login failed!")
+```
+
+Login is called automatically by all API methods, but you can call it explicitly to verify connectivity.

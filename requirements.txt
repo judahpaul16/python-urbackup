@@ -1,4 +1,0 @@
-requests
-urllib3
-mkdocs-material
-mkdocs-git-revision-date-localized-plugin
